@@ -44,7 +44,8 @@ def train_and_evaluate_kd(model, teacher_model, train_dataloader, val_dataloader
 
         val_acc = val_metrics['accuracy']
         is_best = val_acc>=best_val_acc
-
+        logging.info("Val acc: {}".format(val_acc))
+        print('Best_Val_acc: ', best_val_acc)
         # Save weights
         utils.save_checkpoint({'epoch': epoch + 1,
                                'state_dict': model.state_dict(),
@@ -54,7 +55,7 @@ def train_and_evaluate_kd(model, teacher_model, train_dataloader, val_dataloader
 
         # If best_eval, best_save_path
         if is_best:
-            logging.info("- Found new best accuracy")
+            logging.info("- Found new best accuracy: {}".format(val_acc))
             best_val_acc = val_acc
 
             # Save best val metrics in a json file in the model directory

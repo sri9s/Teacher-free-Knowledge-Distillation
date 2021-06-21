@@ -18,7 +18,7 @@ def fetch_dataloader(types, params):
     # using random crops and horizontal flip for train set
     if params.augmentation == "yes":
         train_transformer = transforms.Compose([
-            transforms.RandomCrop(32, padding=4),
+            transforms.RandomCrop(64, padding=4),
             transforms.RandomHorizontalFlip(),  # randomly flip image horizontally
             transforms.RandomRotation(15),
             transforms.ToTensor(),
@@ -65,6 +65,29 @@ def fetch_dataloader(types, params):
         trainset = torchvision.datasets.ImageFolder(train_dir, data_transforms['train'])
         devset = torchvision.datasets.ImageFolder(test_dir, data_transforms['val'])
 
+    elif params.dataset == 'breast_cancer':
+            data_dir = '/data/jayachs1/Teacher-free-Knowledge-Distillation/data/ICIAR2018_BACH_Challenge/split-dataset/'
+            data_transforms = {
+                'train': transforms.Compose([
+                    transforms.Resize((128,128),interpolation=Image.NEAREST),
+                    transforms.RandomRotation(20),
+                    transforms.RandomHorizontalFlip(0.5),
+                    transforms.ToTensor(),
+                    # transforms.Normalize([0.4802, 0.4481, 0.3975], [0.2302, 0.2265, 0.2262]),
+                ]),
+                'val': transforms.Compose([
+                    transforms.ToTensor(),
+                    transforms.Resize((128,128),interpolation=Image.NEAREST),
+                    # transforms.Normalize([0.4802, 0.4481, 0.3975], [0.2302, 0.2265, 0.2262]),
+                ])
+            }
+            train_dir = data_dir + 'train/'
+            test_dir = data_dir + 'val/'
+            trainset = torchvision.datasets.ImageFolder(train_dir, data_transforms['train'])
+            devset = torchvision.datasets.ImageFolder(test_dir, data_transforms['val'])
+            
+
+
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=params.batch_size,
                                               shuffle=True, num_workers=params.num_workers)
 
@@ -102,7 +125,6 @@ def fetch_subset_dataloader(types, params):
     dev_transformer = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.247, 0.243, 0.261))])
-
     if params.dataset=='cifar10':
         trainset = torchvision.datasets.CIFAR10(root='./data-cifar10', train=True,
                                                 download=True, transform=train_transformer)
@@ -132,6 +154,26 @@ def fetch_subset_dataloader(types, params):
         trainset = torchvision.datasets.ImageFolder(train_dir, data_transforms['train'])
         devset = torchvision.datasets.ImageFolder(test_dir, data_transforms['val'])
 
+    elif params.dataset == 'breast_cancer':
+        data_dir = '/data/jayachs1/Teacher-free-Knowledge-Distillation/data/ICIAR2018_BACH_Challenge/split-dataset/'
+        data_transforms = {
+            'train': transforms.Compose([
+                transforms.RandomRotation(20),
+                transforms.RandomHorizontalFlip(0.5),
+                transforms.ToTensor(),
+                transforms.Normalize([0.4802, 0.4481, 0.3975], [0.2302, 0.2265, 0.2262]),
+            ]),
+            'val': transforms.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize([0.4802, 0.4481, 0.3975], [0.2302, 0.2265, 0.2262]),
+            ])
+        }
+        train_dir = data_dir + 'train/'
+        test_dir = data_dir + 'val/'
+        trainset = torchvision.datasets.ImageFolder(train_dir, data_transforms['train'])
+        devset = torchvision.datasets.ImageFolder(test_dir, data_transforms['val'])
+
+
     trainset_size = len(trainset)
     indices = list(range(trainset_size))
     split = int(np.floor(params.subset_percent * trainset_size))
@@ -152,3 +194,4 @@ def fetch_subset_dataloader(types, params):
         dl = devloader
 
     return dl
+

@@ -52,6 +52,8 @@ def main():
     np.random.seed(230)
     torch.cuda.manual_seed(230)
     warnings.filterwarnings("ignore")
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
 
     # Set the logger
     utils.set_logger(os.path.join(args.model_dir, 'train.log'))
@@ -60,6 +62,7 @@ def main():
     logging.info("Loading the datasets...")
 
     # fetch dataloaders, considering full-set vs. sub-set scenarios
+    print(params.dataset)
     if params.subset_percent < 1.0:
         train_dl = data_loader.fetch_subset_dataloader('train', params)
     else:
@@ -86,7 +89,8 @@ def main():
         elif params.model_version == "mobilenet_v2_distill":
             print("Student model: {}".format(params.model_version))
             model = mobilenet.mobilenetv2(class_num=args.num_class).cuda()
-
+            # model = torch.hub.load('pytorch/vision:v0.9.0', 'mobilenet_v2', pretrained=True)
+      
         elif params.model_version == 'resnet18_distill':
             print("Student model: {}".format(params.model_version))
             model = resnet.ResNet18(num_classes=args.num_class).cuda()
@@ -185,7 +189,8 @@ def main():
 
         elif params.teacher == "resnext29":
             print("Teacher model: {}".format(params.teacher))
-            teacher_model = resnext.CifarResNeXt(cardinality=8, depth=29, num_classes=args.num_class).cuda()
+            # teacher_model = resnext.CifarResNeXt(cardinality=8, depth=29, num_classes=args.num_class).cuda()
+            teacher_model = torch.hub.load('pytorch/vision:v0.9.0', 'resnext50_32x4d', pretrained=False).cuda()             
             teacher_checkpoint = 'experiments/pretrained_teacher_models/base_resnext29/best.pth.tar'
             if args.pt_teacher:  # poorly-trained teacher for Defective KD experiments
                 teacher_checkpoint = 'experiments/pretrained_teacher_models/base_resnext29/50.pth.tar'
@@ -194,6 +199,7 @@ def main():
         elif params.teacher == "mobilenet_v2":
             print("Teacher model: {}".format(params.teacher))
             teacher_model = mobilenet.mobilenetv2(class_num=args.num_class).cuda()
+            # teacher_model = torch.hub.load('pytorch/vision:v0.9.0', 'mobilenet_v2', pretrained=False)
             teacher_checkpoint = 'experiments/pretrained_teacher_models/base_mobilenet_v2/best.pth.tar'
 
         elif params.teacher == "shufflenet_v2":
@@ -251,7 +257,9 @@ def main():
             model = resnet.ResNet152(num_classes=args.num_class).cuda()
 
         elif params.model_version == "resnext29":
-            model = resnext.CifarResNeXt(cardinality=8, depth=29, num_classes=args.num_class).cuda()
+            # model = resnext.CifarResNeXt(cardinality=8, depth=29, num_classes=args.num_class).cuda()
+            model = torch.hub.load('pytorch/vision:v0.9.0', 'resnext50_32x4d', pretrained=True).cuda()
+            print('model:', model)
             # model = nn.DataParallel(model).cuda()
 
         if args.regularization:

@@ -116,6 +116,8 @@ class CifarResNeXt(nn.Module):
         x = self.stage_1.forward(x)
         x = self.stage_2.forward(x)
         x = self.stage_3.forward(x)
+        x = F.avg_pool2d(x, 17, 1)
+        x = F.avg_pool2d(x, 9, 1)
         x = F.avg_pool2d(x, 8, 1)
         x = x.view(-1, 1024)
         return self.classifier(x)

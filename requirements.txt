@@ -9,8 +9,8 @@ gast==0.2.0
 grpcio==1.12.1
 idna==2.8
 Markdown==2.6.11
-mkl-fft==1.0.6
-mkl-random==1.0.1
+# mkl-fft==1.0.6
+# mkl-random==1.0.1
 numpy==1.15.2
 olefile==0.46
 Pillow>=6.2.2
@@ -24,9 +24,9 @@ tensorboard==1.10.0
 tensorboardX==1.8
 tensorflow>=1.10.0
 termcolor==1.1.0
-torch==1.2.0
-torchtext==0.4.0
-torchvision==0.4.0a0+9232c4a
+# torch==1.2.0
+# torchtext==0.4.0
+# torchvision==0.4.0a0+9232c4a
 tqdm==4.30.0
 urllib3==1.25.8
 Werkzeug==0.15.4
