@@ -12,5 +12,5 @@
     "num_channels": 32,
     "batch_mean": 1,
     "num_workers": 4,
-    "dataset": "cifar100"
+    "dataset": "breast_cancer"
 }
