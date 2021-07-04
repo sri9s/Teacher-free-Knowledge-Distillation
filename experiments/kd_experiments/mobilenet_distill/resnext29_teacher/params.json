@@ -12,6 +12,6 @@
     "save_summary_steps": 100,
     "num_workers": 4,
     "anchor_num": 10,
-    "dataset": "cifar100"
+    "dataset": "breast_cancer"
 }
 
